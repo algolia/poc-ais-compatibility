@@ -10,14 +10,14 @@ import { TypedBaseWidget } from '../typed-base-widget';
 import { NgAisInstantSearch } from '../instantsearch/instantsearch';
 import { NgAisIndex } from '../index-widget/index-widget';
 import { noop } from '../utils';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'ais-breadcrumb',
+  standalone: true,
+  imports: [CommonModule],
   template: `
-    <div
-      [class]="cx()"
-      *ngIf="!isHidden"
-    >
+    <div [class]="cx()" *ngIf="!isHidden">
       <ul [class]="cx('list')">
         <li
           *ngFor="let item of items"
@@ -33,15 +33,15 @@ import { noop } from '../utils';
           </span>
           <a
             [class]="cx('link')"
-            href="{{state.createURL(item.value)}}"
+            href="{{ state.createURL(item.value) }}"
             *ngIf="!item.isLast"
             (click)="handleClick($event, item)"
           >
-            {{item.label}}
+            {{ item.label }}
           </a>
 
           <span *ngIf="item.isLast">
-            {{item.label}}
+            {{ item.label }}
           </span>
         </li>
       </ul>
@@ -53,7 +53,7 @@ export class NgAisBreadcrumb extends TypedBaseWidget<
   BreadcrumbConnectorParams
 > {
   // instance options
-  @Input() public attributes: BreadcrumbConnectorParams['attributes'];
+  @Input() public attributes!: BreadcrumbConnectorParams['attributes'];
   @Input() public rootPath?: BreadcrumbConnectorParams['rootPath'];
   @Input() public separator?: BreadcrumbConnectorParams['separator'];
   @Input() public transformItems?: BreadcrumbConnectorParams['transformItems'];
@@ -72,7 +72,7 @@ export class NgAisBreadcrumb extends TypedBaseWidget<
     }));
   }
 
-  public state: BreadcrumbRenderState = {
+  public override state: BreadcrumbRenderState = {
     createURL: () => '#',
     items: [],
     refine: noop,
@@ -89,7 +89,7 @@ export class NgAisBreadcrumb extends TypedBaseWidget<
     super('Breadcrumb');
   }
 
-  public ngOnInit() {
+  public override ngOnInit() {
     this.createWidget(
       connectBreadcrumb,
       {

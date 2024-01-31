@@ -17,42 +17,48 @@ import { TypedBaseWidget } from '../typed-base-widget';
 import { NgAisInstantSearch } from '../instantsearch/instantsearch';
 import { NgAisIndex } from '../index-widget/index-widget';
 import { noop } from '../utils';
+import { CommonModule } from '@angular/common';
+import { NgAisHighlight } from '../highlight/highlight';
 
 @Component({
   selector: 'ais-infinite-hits',
+  standalone: true,
+  imports: [CommonModule, NgAisHighlight],
   template: `
     <div [class]="cx()">
       <ng-container *ngTemplateOutlet="template; context: state"></ng-container>
 
       <!-- default rendering if no template specified -->
       <button
-        [ngClass]="[cx('loadPrevious'), this.state.isFirstPage ? cx('loadPrevious', 'disabled') : '']"
+        [ngClass]="[
+          cx('loadPrevious'),
+          this.state.isFirstPage ? cx('loadPrevious', 'disabled') : ''
+        ]"
         (click)="showPreviousHandler($event)"
         [disabled]="state.isFirstPage"
         *ngIf="showPrevious && !template"
       >
-        {{showPreviousLabel}}
+        {{ showPreviousLabel }}
       </button>
 
       <div *ngIf="!template">
         <ul [class]="cx('list')">
-          <li
-            [class]="cx('item')"
-            *ngFor="let hit of state.hits"
-          >
-            <ais-highlight attribute="name" [hit]="hit">
-            </ais-highlight>
+          <li [class]="cx('item')" *ngFor="let hit of state.hits">
+            <ais-highlight attribute="name" [hit]="hit"> </ais-highlight>
           </li>
         </ul>
       </div>
 
       <button
-        [ngClass]="[cx('loadMore'), this.state.isLastPage ? cx('loadMore', 'disabled') : '']"
+        [ngClass]="[
+          cx('loadMore'),
+          this.state.isLastPage ? cx('loadMore', 'disabled') : ''
+        ]"
         (click)="showMoreHandler($event)"
         [disabled]="state.isLastPage"
         *ngIf="!template"
       >
-        {{showMoreLabel}}
+        {{ showMoreLabel }}
       </button>
     </div>
   `,
@@ -73,7 +79,7 @@ export class NgAisInfiniteHits extends TypedBaseWidget<
   @Input()
   public transformItems?: InfiniteHitsConnectorParams['transformItems'];
 
-  public state: InfiniteHitsRenderState = {
+  public override state: InfiniteHitsRenderState = {
     hits: [],
     results: undefined,
     currentPageHits: [],
@@ -95,7 +101,7 @@ export class NgAisInfiniteHits extends TypedBaseWidget<
     super('InfiniteHits');
   }
 
-  ngOnInit() {
+  override ngOnInit() {
     this.createWidget(
       connectInfiniteHitsWithInsights,
       {
@@ -119,7 +125,10 @@ export class NgAisInfiniteHits extends TypedBaseWidget<
     this.state.showPrevious();
   }
 
-  updateState = (state, isFirstRendering: boolean) => {
+  override updateState = (
+    state: InfiniteHitsRenderState,
+    isFirstRendering: boolean
+  ) => {
     if (isFirstRendering) return;
     this.state = state;
   };

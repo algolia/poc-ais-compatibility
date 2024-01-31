@@ -10,25 +10,22 @@ import { TypedBaseWidget } from '../typed-base-widget';
 import { NgAisInstantSearch } from '../instantsearch/instantsearch';
 import { NgAisIndex } from '../index-widget/index-widget';
 import { noop } from '../utils';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'ais-hits-per-page',
+  standalone: true,
+  imports: [CommonModule],
   template: `
-    <div
-      [class]="cx()"
-      *ngIf="!isHidden"
-    >
-      <select
-        [class]="cx('select')"
-        (change)="state.refine($event.target.value)"
-      >
+    <div [class]="cx()" *ngIf="!isHidden">
+      <select [class]="cx('select')" (change)="handleChange($event)">
         <option
           [class]="cx('option')"
           *ngFor="let item of state.items"
           [value]="item.value"
           [selected]="item.isRefined"
         >
-          {{item.label}}
+          {{ item.label }}
         </option>
       </select>
     </div>
@@ -38,18 +35,19 @@ export class NgAisHitsPerPage extends TypedBaseWidget<
   HitsPerPageWidgetDescription,
   HitsPerPageConnectorParams
 > {
-  @Input() public items: HitsPerPageConnectorParams['items'];
+  @Input() public items!: HitsPerPageConnectorParams['items'];
   @Input() public transformItems?: HitsPerPageConnectorParams['transformItems'];
 
-  public state: HitsPerPageRenderState = {
+  public override state: HitsPerPageRenderState = {
     items: [],
     refine: noop,
     hasNoResults: true, // TODO: disable <select> when true
     canRefine: false,
+    createURL: () => '#',
   };
 
   get isHidden(): boolean {
-    return this.state.items.length === 0 && this.autoHideContainer;
+    return Boolean(this.state.items.length === 0 && this.autoHideContainer);
   }
 
   constructor(
@@ -62,7 +60,7 @@ export class NgAisHitsPerPage extends TypedBaseWidget<
     super('HitsPerPage');
   }
 
-  public ngOnInit() {
+  public override ngOnInit() {
     this.createWidget(
       connectHitsPerPage,
       {
@@ -74,5 +72,9 @@ export class NgAisHitsPerPage extends TypedBaseWidget<
       }
     );
     super.ngOnInit();
+  }
+
+  public handleChange(event: Event) {
+    this.state.refine(parseInt((event.target as HTMLSelectElement).value, 10));
   }
 }

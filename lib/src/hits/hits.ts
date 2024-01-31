@@ -17,9 +17,14 @@ import {
 import { TypedBaseWidget } from '../typed-base-widget';
 import { NgAisInstantSearch } from '../instantsearch/instantsearch';
 import { NgAisIndex } from '../index-widget/index-widget';
+import { noop } from '../utils';
+import { NgAisHighlight } from '../highlight/highlight';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'ais-hits',
+  standalone: true,
+  imports: [CommonModule, NgAisHighlight],
   template: `
     <div [class]="cx()">
       <ng-container *ngTemplateOutlet="template; context: state"></ng-container>
@@ -27,12 +32,8 @@ import { NgAisIndex } from '../index-widget/index-widget';
       <!-- default rendering if no template specified -->
       <div *ngIf="!template">
         <ul [class]="cx('list')">
-          <li
-            [class]="cx('item')"
-            *ngFor="let hit of state.hits"
-          >
-            <ais-highlight attribute="name" [hit]="hit">
-            </ais-highlight>
+          <li [class]="cx('item')" *ngFor="let hit of state.hits">
+            <ais-highlight attribute="name" [hit]="hit"> </ais-highlight>
           </li>
         </ul>
       </div>
@@ -44,16 +45,16 @@ export class NgAisHits extends TypedBaseWidget<
   HitsConnectorParams
 > {
   @ContentChild(TemplateRef, { static: false })
-  public template?: TemplateRef<any>;
+  public template!: TemplateRef<any>;
 
   @Input() public escapeHTML?: HitsConnectorParams['escapeHTML'];
   @Input() public transformItems?: HitsConnectorParams['transformItems'];
 
-  public state: HitsRenderState = {
+  public override state: HitsRenderState = {
     hits: [],
     results: undefined,
-    bindEvent: undefined,
-    sendEvent: undefined,
+    bindEvent: () => '',
+    sendEvent: noop,
   };
 
   constructor(
@@ -66,7 +67,7 @@ export class NgAisHits extends TypedBaseWidget<
     super('Hits');
   }
 
-  ngOnInit() {
+  override ngOnInit() {
     this.createWidget(
       connectHitsWithInsights,
       {
@@ -80,7 +81,10 @@ export class NgAisHits extends TypedBaseWidget<
     super.ngOnInit();
   }
 
-  public updateState = (state: HitsRenderState, isFirstRendering: boolean) => {
+  public override updateState = (
+    state: HitsRenderState,
+    isFirstRendering: boolean
+  ) => {
     if (isFirstRendering) return;
     this.state = state;
   };

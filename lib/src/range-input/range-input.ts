@@ -11,26 +11,19 @@ import { TypedBaseWidget } from '../typed-base-widget';
 import { NgAisInstantSearch } from '../instantsearch/instantsearch';
 import { NgAisIndex } from '../index-widget/index-widget';
 import { parseNumberInput, noop } from '../utils';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'ais-range-input',
+  standalone: true,
+  imports: [CommonModule],
   template: `
-    <div [ngClass]="[
-        cx(),
-        !canRefine ? cx('', 'noRefinement') : ''
-      ]">
-      <form
-        [class]="cx('form')"
-        (submit)="handleSubmit($event)"
-        novalidate
-      >
+    <div [ngClass]="[cx(), !canRefine ? cx('', 'noRefinement') : '']">
+      <form [class]="cx('form')" (submit)="handleSubmit($event)" novalidate>
         <label [class]="cx('label')">
-          <span [class]="cx('currency')">{{currency}}</span>
+          <span [class]="cx('currency')">{{ currency }}</span>
           <input
-            [ngClass]="[
-              cx('input'),
-              cx('input', 'min')
-            ]"
+            [ngClass]="[cx('input'), cx('input', 'min')]"
             type="number"
             [min]="state.range.min"
             [max]="state.range.max"
@@ -41,15 +34,12 @@ import { parseNumberInput, noop } from '../utils';
           />
         </label>
 
-        <span [class]="cx('separator')">{{separator}}</span>
+        <span [class]="cx('separator')">{{ separator }}</span>
 
         <label [class]="cx('label')">
-          <span [class]="cx('currency')">{{currency}}</span>
+          <span [class]="cx('currency')">{{ currency }}</span>
           <input
-            [ngClass]="[
-              cx('input'),
-              cx('input', 'max')
-            ]"
+            [ngClass]="[cx('input'), cx('input', 'max')]"
             type="number"
             [min]="state.range.min"
             [max]="state.range.max"
@@ -60,11 +50,8 @@ import { parseNumberInput, noop } from '../utils';
           />
         </label>
 
-        <button
-          [class]="cx('submit')"
-          (click)="handleSubmit($event)"
-        >
-          {{submitLabel}}
+        <button [class]="cx('submit')" (click)="handleSubmit($event)">
+          {{ submitLabel }}
         </button>
       </form>
     </div>
@@ -80,7 +67,7 @@ export class NgAisRangeInput extends TypedBaseWidget<
   @Input() public submitLabel: string = 'Go';
 
   // instance options
-  @Input() public attribute: RangeConnectorParams['attribute'];
+  @Input() public attribute!: RangeConnectorParams['attribute'];
   @Input() public min?: RangeConnectorParams['min'];
   @Input() public max?: RangeConnectorParams['max'];
   @Input() public precision?: RangeConnectorParams['precision'] = 0;
@@ -90,7 +77,7 @@ export class NgAisRangeInput extends TypedBaseWidget<
   public maxInputValue?: number;
 
   get step() {
-    const precision = parseNumberInput(this.precision);
+    const precision = parseNumberInput(this.precision)!;
     return 1 / Math.pow(10, precision);
   }
 
@@ -98,7 +85,7 @@ export class NgAisRangeInput extends TypedBaseWidget<
     return this.state.range.min !== this.state.range.max;
   }
 
-  public state: RangeRenderState = {
+  public override state: RangeRenderState = {
     range: { min: undefined, max: undefined },
     refine: noop,
     start: [0, 0],
@@ -108,7 +95,7 @@ export class NgAisRangeInput extends TypedBaseWidget<
       from: () => '',
       to: () => '',
     },
-    sendEvent: undefined,
+    sendEvent: () => {},
   };
 
   constructor(
@@ -121,7 +108,7 @@ export class NgAisRangeInput extends TypedBaseWidget<
     super('RangeInput');
   }
 
-  public ngOnInit() {
+  public override ngOnInit() {
     this.createWidget(
       connectRange,
       {

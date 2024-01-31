@@ -1,4 +1,4 @@
-import { Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { bem, noop } from './utils';
 import { NgAisInstantSearch } from './instantsearch/instantsearch';
@@ -16,19 +16,23 @@ export { Widget, Connector };
 
 type AdditionalWidgetProperties = Partial<Widget<WidgetDescription>>;
 
+@Component({
+  template: '',
+})
 export abstract class TypedBaseWidget<
   TWidgetDescription extends WidgetDescription,
   TConnectorParams extends UnknownWidgetParams
-> implements OnInit, OnDestroy {
+> implements OnInit, OnDestroy
+{
   @Input() public autoHideContainer?: boolean;
 
-  public widget?: Widget;
+  public widget!: Widget;
   public state?: TWidgetDescription['renderState'];
   public cx: ReturnType<typeof bem>;
   public abstract instantSearchInstance: NgAisInstantSearch;
   public abstract parentIndex?: NgAisIndex;
 
-  protected constructor(widgetName: string) {
+  protected constructor(@Inject('widgetName') widgetName: string) {
     this.cx = bem(widgetName);
   }
 

@@ -11,6 +11,7 @@ import {
 
 @Component({
   selector: 'ais-query-rule-context',
+  standalone: true,
   template: '',
 })
 export class NgAisQueryRuleContext extends TypedBaseWidget<
@@ -31,7 +32,7 @@ export class NgAisQueryRuleContext extends TypedBaseWidget<
     super('QueryRuleContext');
   }
 
-  public ngOnInit() {
+  public override ngOnInit() {
     this.createWidget(
       connectQueryRules,
       {

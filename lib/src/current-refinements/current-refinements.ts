@@ -11,27 +11,29 @@ import { TypedBaseWidget } from '../typed-base-widget';
 import { NgAisInstantSearch } from '../instantsearch/instantsearch';
 import { NgAisIndex } from '../index-widget/index-widget';
 import { noop } from '../utils';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'ais-current-refinements',
+  standalone: true,
+  imports: [CommonModule],
   template: `
-    <div
-      [class]="cx()"
-      *ngIf="!isHidden"
-    >
-      <ul
-        [class]="cx('list')"
-        *ngFor="let item of state.items"
-      >
+    <div [class]="cx()" *ngIf="!isHidden">
+      <ul [class]="cx('list')" *ngFor="let item of state.items">
         <li [class]="cx('item')">
-          <span [class]="cx('label')">{{item.label | titlecase}}:</span>
+          <span [class]="cx('label')">{{ item.label | titlecase }}:</span>
 
           <span
             [class]="cx('category')"
             *ngFor="let refinement of item.refinements"
           >
-            <span [class]="cx('categoryLabel')">{{refinement.label}}</span>
-            <button [class]="cx('delete')" (click)="handleClick($event, refinement)">✕</button>
+            <span [class]="cx('categoryLabel')">{{ refinement.label }}</span>
+            <button
+              [class]="cx('delete')"
+              (click)="handleClick($event, refinement)"
+            >
+              ✕
+            </button>
           </span>
         </li>
       </ul>
@@ -50,7 +52,7 @@ export class NgAisCurrentRefinements extends TypedBaseWidget<
   @Input()
   public transformItems?: CurrentRefinementsConnectorParams['transformItems'];
 
-  public state: CurrentRefinementsRenderState = {
+  public override state: CurrentRefinementsRenderState = {
     createURL: () => '#',
     refine: noop,
     items: [],
@@ -71,7 +73,7 @@ export class NgAisCurrentRefinements extends TypedBaseWidget<
     super('CurrentRefinements');
   }
 
-  public ngOnInit() {
+  public override ngOnInit() {
     this.createWidget(
       connectCurrentRefinements,
       {

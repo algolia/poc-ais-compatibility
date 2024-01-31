@@ -10,19 +10,16 @@ import {
   NumericMenuWidgetDescription,
   NumericMenuRenderState,
 } from 'instantsearch.js/es/connectors/numeric-menu/connectNumericMenu';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'ais-numeric-menu',
+  standalone: true,
+  imports: [CommonModule],
   template: `
-    <div
-      [class]="cx()"
-      *ngIf="!isHidden"
-    >
+    <div [class]="cx()" *ngIf="!isHidden">
       <ul [class]="cx('list')">
-        <li
-          [class]="getItemClass(item)"
-          *ngFor="let item of state.items"
-        >
+        <li [class]="getItemClass(item)" *ngFor="let item of state.items">
           <label [class]="cx('label')">
             <input
               [class]="cx('radio')"
@@ -31,7 +28,7 @@ import {
               [checked]="item.isRefined"
               (change)="refine($event, item)"
             />
-            <span [class]="cx('labelText')">{{item.label}}</span>
+            <span [class]="cx('labelText')">{{ item.label }}</span>
           </label>
         </li>
       </ul>
@@ -42,11 +39,11 @@ export class NgAisNumericMenu extends TypedBaseWidget<
   NumericMenuWidgetDescription,
   NumericMenuConnectorParams
 > {
-  @Input() public attribute: NumericMenuConnectorParams['attribute'];
-  @Input() public items: NumericMenuConnectorParams['items'];
+  @Input() public attribute!: NumericMenuConnectorParams['attribute'];
+  @Input() public items!: NumericMenuConnectorParams['items'];
   @Input() public transformItems?: NumericMenuConnectorParams['transformItems'];
 
-  public state: NumericMenuRenderState = {
+  public override state: NumericMenuRenderState = {
     items: [],
     refine: noop,
     createURL: () => '#',
@@ -69,7 +66,7 @@ export class NgAisNumericMenu extends TypedBaseWidget<
     super('NumericMenu');
   }
 
-  public ngOnInit() {
+  public override ngOnInit() {
     this.createWidget(
       connectNumericMenu,
       {

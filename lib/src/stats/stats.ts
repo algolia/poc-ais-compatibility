@@ -17,16 +17,19 @@ import {
   StatsWidgetDescription,
   StatsRenderState,
 } from 'instantsearch.js/es/connectors/stats/connectStats';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'ais-stats',
+  standalone: true,
+  imports: [CommonModule],
   template: `
     <div [class]="cx()">
       <ng-container *ngTemplateOutlet="template; context: templateContext">
       </ng-container>
 
       <span *ngIf="!template" [class]="cx('text')">
-        {{state.nbHits}} results found in {{state.processingTimeMS}}ms.
+        {{ state.nbHits }} results found in {{ state.processingTimeMS }}ms.
       </span>
     </div>
   `,
@@ -38,7 +41,7 @@ export class NgAisStats extends TypedBaseWidget<
   @ContentChild(TemplateRef, { static: false })
   public template: any;
 
-  public state: StatsRenderState = {
+  public override state: StatsRenderState = {
     nbHits: 0,
     nbPages: 0,
     page: 0,

@@ -10,25 +10,28 @@ import {
   ToggleRefinementWidgetDescription,
   ToggleRefinementRenderState,
 } from 'instantsearch.js/es/connectors/toggle-refinement/connectToggleRefinement';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'ais-toggle',
+  standalone: true,
+  imports: [CommonModule],
   template: `
-    <div [class]='cx()'>
+    <div [class]="cx()">
       <label [class]="cx('label')">
         <input
           [class]="cx('checkbox')"
-          type='checkbox'
-          value='{{state.value.name}}'
-          [checked]='state.value.isRefined'
-          (change)='handleChange($event)'
+          type="checkbox"
+          value="{{ state.value.name }}"
+          [checked]="state.value.isRefined"
+          (change)="handleChange($event)"
         />
 
         <span [class]="cx('labelText')">
-          {{label || state.value.name}}
+          {{ label || state.value.name }}
         </span>
 
-        <span [class]="cx('count')">{{state.value.count}}</span>
+        <span [class]="cx('count')">{{ state.value.count }}</span>
       </label>
     </div>
   `,
@@ -38,21 +41,23 @@ export class NgAisToggle extends TypedBaseWidget<
   ToggleRefinementConnectorParams
 > {
   // rendering options
-  @Input() public label: string;
+  @Input() public label!: string;
 
   // instance options
-  @Input() public attribute: ToggleRefinementConnectorParams['attribute'];
+  @Input() public attribute!: ToggleRefinementConnectorParams['attribute'];
   @Input() public on?: ToggleRefinementConnectorParams['on'];
   @Input() public off?: ToggleRefinementConnectorParams['off'];
 
-  public state: ToggleRefinementRenderState = {
+  public override state: ToggleRefinementRenderState = {
     canRefine: false,
-    sendEvent: undefined,
+    sendEvent: noop,
     value: {
-      count: undefined,
+      count: null,
       isRefined: false,
       name: '',
+      // @ts-ignore
       offFacetValue: undefined,
+      // @ts-ignore
       onFacetValue: undefined,
     },
     createURL: () => '#',
@@ -69,7 +74,7 @@ export class NgAisToggle extends TypedBaseWidget<
     super('ToggleRefinement');
   }
 
-  public ngOnInit() {
+  public override ngOnInit() {
     this.createWidget(
       connectToggleRefinement,
       {

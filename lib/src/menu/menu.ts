@@ -11,14 +11,14 @@ import {
   MenuRenderState,
   MenuItem,
 } from 'instantsearch.js/es/connectors/menu/connectMenu';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'ais-menu',
+  standalone: true,
+  imports: [CommonModule],
   template: `
-    <div
-      [class]="cx()"
-      *ngIf="!isHidden"
-    >
+    <div [class]="cx()" *ngIf="!isHidden">
       <ul [class]="cx('list')">
         <li
           [class]="getItemClass(item)"
@@ -26,12 +26,12 @@ import {
           (click)="handleClick($event, item.value)"
         >
           <a
-            href="{{state.createURL(item.value)}}"
+            href="{{ state.createURL(item.value) }}"
             [class]="cx('link')"
             (click)="handleClick($event, item.value)"
           >
-            <span [class]="cx('label')">{{item.label}}</span>
-            <span [class]="cx('count')">{{item.count}}</span>
+            <span [class]="cx('label')">{{ item.label }}</span>
+            <span [class]="cx('count')">{{ item.count }}</span>
           </a>
         </li>
       </ul>
@@ -42,7 +42,7 @@ import {
         [class]="showMoreClass"
         [disabled]="!state.canToggleShowMore"
       >
-        {{state.isShowingMore ? showLessLabel : showMoreLabel}}
+        {{ state.isShowingMore ? showLessLabel : showMoreLabel }}
       </button>
     </div>
   `,
@@ -56,14 +56,14 @@ export class NgAisMenu extends TypedBaseWidget<
   @Input() public showLessLabel: string = 'Show less';
 
   // instance options
-  @Input() public attribute: MenuConnectorParams['attribute'];
+  @Input() public attribute!: MenuConnectorParams['attribute'];
   @Input() public showMore?: MenuConnectorParams['showMore'];
   @Input() public limit?: MenuConnectorParams['limit'];
   @Input() public showMoreLimit?: MenuConnectorParams['showMoreLimit'];
   @Input() public sortBy?: MenuConnectorParams['sortBy'];
   @Input() public transformItems?: MenuConnectorParams['transformItems'];
 
-  public state: MenuRenderState = {
+  public override state: MenuRenderState = {
     items: [],
     refine: noop,
     createURL: () => '#',
@@ -98,7 +98,7 @@ export class NgAisMenu extends TypedBaseWidget<
     super('Menu');
   }
 
-  public ngOnInit() {
+  public override ngOnInit() {
     this.createWidget(
       connectMenu,
       {

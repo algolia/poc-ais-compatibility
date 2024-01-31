@@ -10,14 +10,15 @@ import { TypedBaseWidget } from '../typed-base-widget';
 import { NgAisInstantSearch } from '../instantsearch/instantsearch';
 import { NgAisIndex } from '../index-widget/index-widget';
 import { parseNumberInput, noop } from '../utils';
+import { CommonModule } from '@angular/common';
+import { NgAisHierarchicalMenuItem } from './hierarchical-menu-item';
 
 @Component({
   selector: 'ais-hierarchical-menu',
+  standalone: true,
+  imports: [CommonModule, NgAisHierarchicalMenuItem],
   template: `
-    <div
-      [class]="cx()"
-      *ngIf="!isHidden"
-    >
+    <div [class]="cx()" *ngIf="!isHidden">
       <ul [class]="cx('list') + ' ' + cx('list', 'lvl0')">
         <ais-hierarchical-menu-item
           *ngFor="let item of state.items"
@@ -34,7 +35,7 @@ export class NgAisHierarchicalMenu extends TypedBaseWidget<
   HierarchicalMenuWidgetDescription,
   HierarchicalMenuConnectorParams
 > {
-  @Input() public attributes: HierarchicalMenuConnectorParams['attributes'];
+  @Input() public attributes!: HierarchicalMenuConnectorParams['attributes'];
   @Input() public separator?: HierarchicalMenuConnectorParams['separator'];
   @Input() public rootPath?: HierarchicalMenuConnectorParams['rootPath'];
   @Input()
@@ -45,7 +46,7 @@ export class NgAisHierarchicalMenu extends TypedBaseWidget<
   @Input()
   public transformItems?: HierarchicalMenuConnectorParams['transformItems'];
 
-  public state: HierarchicalMenuRenderState = {
+  public override state: HierarchicalMenuRenderState = {
     createURL: () => '#',
     items: [],
     refine: noop,
@@ -57,7 +58,7 @@ export class NgAisHierarchicalMenu extends TypedBaseWidget<
   };
 
   get isHidden(): boolean {
-    return this.state.items.length === 0 && this.autoHideContainer;
+    return Boolean(this.state.items.length === 0 && this.autoHideContainer);
   }
 
   constructor(
@@ -70,7 +71,7 @@ export class NgAisHierarchicalMenu extends TypedBaseWidget<
     super('HierarchicalMenu');
   }
 
-  public ngOnInit() {
+  public override ngOnInit() {
     this.createWidget(
       connectHierarchicalMenu,
       {

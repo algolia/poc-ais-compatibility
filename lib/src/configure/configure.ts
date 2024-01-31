@@ -21,6 +21,7 @@ import { noop } from '../utils';
 
 @Component({
   selector: 'ais-configure',
+  standalone: true,
   template: '',
 })
 export class NgAisConfigure extends TypedBaseWidget<
@@ -28,11 +29,11 @@ export class NgAisConfigure extends TypedBaseWidget<
   ConfigureConnectorParams
 > {
   // instance options
-  private internalSearchParameters: ConfigureConnectorParams['searchParameters'];
+  private internalSearchParameters!: ConfigureConnectorParams['searchParameters'];
 
-  private differ: KeyValueDiffer<string, any>;
+  private differ!: KeyValueDiffer<string, any>;
 
-  public state: ConfigureRenderState = {
+  public override state: ConfigureRenderState = {
     refine: noop,
   };
 
@@ -55,7 +56,7 @@ export class NgAisConfigure extends TypedBaseWidget<
     }
   }
 
-  public ngOnInit() {
+  public override ngOnInit() {
     this.createWidget(
       connectConfigure,
       {
