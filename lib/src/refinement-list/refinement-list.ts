@@ -10,18 +10,17 @@ import {
   RefinementListRenderState,
   RefinementListItem,
 } from 'instantsearch.js/es/connectors/refinement-list/connectRefinementList';
+import { CommonModule } from '@angular/common';
+import { NgAisFacetsSearch } from './facets-search';
+import { NgAisHighlight } from '../highlight/highlight';
 
 @Component({
   selector: 'ais-refinement-list',
+  standalone: true,
+  imports: [CommonModule, NgAisFacetsSearch, NgAisHighlight],
   template: `
-    <div
-      [class]="cx()"
-      *ngIf="!isHidden"
-    >
-      <div
-        *ngIf="searchable"
-        [class]="cx('searchBox')"
-      >
+    <div [class]="cx()" *ngIf="!isHidden">
+      <div *ngIf="searchable" [class]="cx('searchBox')">
         <ais-facets-search
           [search]="state.searchForItems"
           [searchPlaceholder]="searchPlaceholder"
@@ -39,13 +38,16 @@ import {
             <input
               [class]="cx('checkbox')"
               type="checkbox"
-              value="{{item.value}}"
+              value="{{ item.value }}"
               [checked]="item.isRefined"
             />
             <span [class]="cx('labelText')">
-              <ais-highlight attribute="highlighted" [hit]="item"></ais-highlight>
+              <ais-highlight
+                attribute="highlighted"
+                [hit]="item"
+              ></ais-highlight>
             </span>
-            <span [class]="cx('count')">{{item.count}}</span>
+            <span [class]="cx('count')">{{ item.count }}</span>
           </label>
         </li>
       </ul>
@@ -56,7 +58,7 @@ import {
         (click)="state.toggleShowMore()"
         [disabled]="!state.canToggleShowMore"
       >
-        {{state.isShowingMore ? showLessLabel : showMoreLabel}}
+        {{ state.isShowingMore ? showLessLabel : showMoreLabel }}
       </button>
     </div>
   `,
@@ -72,7 +74,7 @@ export class NgAisRefinementList extends TypedBaseWidget<
   @Input() public searchPlaceholder: string = 'Search here...';
 
   // instance options
-  @Input() public attribute: RefinementListConnectorParams['attribute'];
+  @Input() public attribute!: RefinementListConnectorParams['attribute'];
   @Input() public operator: RefinementListConnectorParams['operator'];
   @Input() public limit: RefinementListConnectorParams['limit'];
   @Input() public showMore: RefinementListConnectorParams['showMore'];
@@ -81,7 +83,7 @@ export class NgAisRefinementList extends TypedBaseWidget<
   @Input()
   public transformItems?: RefinementListConnectorParams['transformItems'];
 
-  public state: RefinementListRenderState = {
+  public override state: RefinementListRenderState = {
     canRefine: false,
     canToggleShowMore: false,
     createURL: () => '',
@@ -109,7 +111,7 @@ export class NgAisRefinementList extends TypedBaseWidget<
     super('RefinementList');
   }
 
-  public ngOnInit() {
+  public override ngOnInit() {
     this.createWidget(
       connectRefinementList,
       {

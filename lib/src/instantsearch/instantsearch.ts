@@ -18,9 +18,7 @@ import { Widget } from '../typed-base-widget';
 import { VERSION } from '../version';
 import { InstantSearchOptions, InstantSearch } from 'instantsearch.js/es/types';
 export { SearchClient, Hit } from 'instantsearch.js/es/types';
-export {
-  PlainSearchParameters as SearchParameters,
-} from 'algoliasearch-helper';
+export { PlainSearchParameters as SearchParameters } from 'algoliasearch-helper';
 
 // this is needed for different webpack/typescript configurations
 const algoliasearch = algoliasearchProxy.default || algoliasearchProxy;
@@ -39,19 +37,20 @@ export type InstantSearchInstance = InstantSearch;
 
 @Component({
   selector: 'ais-instantsearch',
+  standalone: true,
   template: '<ng-content></ng-content>',
 })
 export class NgAisInstantSearch implements AfterViewInit, OnInit, OnDestroy {
-  @Input() public config: InstantSearchConfig;
+  @Input() public config!: InstantSearchConfig;
   @Input() public instanceName: string = 'default';
 
   @Output()
-  change: EventEmitter<{ results: {}; state: {} }> = new EventEmitter<{
-    results: {};
-    state: {};
+  change: EventEmitter<{ results?: {}; state?: {} }> = new EventEmitter<{
+    results?: {};
+    state?: {};
   }>();
 
-  public instantSearchInstance: InstantSearchInstance;
+  public instantSearchInstance!: InstantSearchInstance;
 
   constructor(@Inject(PLATFORM_ID) public platformId: Object) {}
 
@@ -94,8 +93,8 @@ export class NgAisInstantSearch implements AfterViewInit, OnInit, OnDestroy {
 
   onRender = () => {
     this.change.emit({
-      results: this.instantSearchInstance.helper.lastResults,
-      state: this.instantSearchInstance.helper.state,
+      results: this.instantSearchInstance.helper!.lastResults || undefined,
+      state: this.instantSearchInstance.helper!.state,
     });
   };
 }

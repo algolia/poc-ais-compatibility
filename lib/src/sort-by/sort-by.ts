@@ -12,6 +12,7 @@ import {
   SortByRenderState,
   SortByItem,
 } from 'instantsearch.js/es/connectors/sort-by/connectSortBy';
+import { CommonModule } from '@angular/common';
 
 export {
   SortByConnector,
@@ -23,19 +24,18 @@ export {
 
 @Component({
   selector: 'ais-sort-by',
+  standalone: true,
+  imports: [CommonModule],
   template: `
     <div [class]="cx()">
-      <select
-        [class]="cx('select')"
-        (change)="state.refine($event.target.value)"
-      >
+      <select [class]="cx('select')" (change)="handleChange($event)">
         <option
           [class]="cx('option')"
           *ngFor="let item of state.options"
           [value]="item.value"
           [selected]="item.value === state.currentRefinement"
         >
-          {{item.label}}
+          {{ item.label }}
         </option>
       </select>
     </div>
@@ -45,12 +45,12 @@ export class NgAisSortBy extends TypedBaseWidget<
   SortByWidgetDescription,
   SortByConnectorParams
 > {
-  @Input() public items: SortByItem[];
+  @Input() public items!: SortByItem[];
   @Input()
   public transformItems?: <U extends SortByItem>(items: SortByItem[]) => U[];
 
-  public state: SortByRenderState = {
-    currentRefinement: null,
+  public override state: SortByRenderState = {
+    currentRefinement: '',
     options: [],
     refine: noop,
     hasNoResults: false,
@@ -67,7 +67,7 @@ export class NgAisSortBy extends TypedBaseWidget<
     super('SortBy');
   }
 
-  public ngOnInit() {
+  public override ngOnInit() {
     this.createWidget(
       connectSortBy,
       {
@@ -79,5 +79,9 @@ export class NgAisSortBy extends TypedBaseWidget<
       }
     );
     super.ngOnInit();
+  }
+
+  handleChange(event: Event) {
+    this.state.refine((event.target as HTMLSelectElement).value);
   }
 }

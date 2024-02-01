@@ -6,7 +6,7 @@
     "declaration": true,
     "declarationMap": true,
     "inlineSources": true,
-    "types": []
+    "types": ["./src/global.d.ts"]
   },
   "exclude": [
     "**/*.spec.ts"

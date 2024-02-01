@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 import { Hit } from 'instantsearch.js';
@@ -7,12 +8,14 @@ import { getPropertyByPath } from 'instantsearch.js/es/lib/utils';
 
 @Component({
   selector: 'ais-highlight',
+  standalone: true,
+  imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `<span class="ais-Highlight" [innerHtml]="content"></span>`,
 })
 export class NgAisHighlight {
-  @Input() attribute: string;
-  @Input() hit: Partial<Hit>;
+  @Input() attribute!: string;
+  @Input() hit!: Partial<Hit>;
   @Input() tagName: string = 'mark';
 
   get content() {

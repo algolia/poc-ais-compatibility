@@ -1,5 +1,5 @@
 export function bem(widgetName: string) {
-  const cx = function(element?: string, subElement?: string) {
+  const cx = function (element?: string, subElement?: string) {
     let cssClass = `ais-${widgetName}`;
     if (element) {
       cssClass += `-${element}`;
@@ -18,7 +18,7 @@ export function parseNumberInput(input?: number | string) {
 
 export function noop(...args: any[]): void {}
 
-export function capitalize(s) {
+export function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
@@ -48,7 +48,10 @@ export function range({
 }
 
 // See https://github.com/algolia/react-instantsearch/blob/86dfe8674d566124af55a8f044051d0062786c1a/packages/react-instantsearch-core/src/core/utils.ts#L138-L142
-export function getPropertyByPath(object: object, path: string): any {
+export function getPropertyByPath(
+  object: Record<string, any>,
+  path: string
+): any {
   return path
     .replace(/\[(\d+)]/g, '.$1')
     .split('.')

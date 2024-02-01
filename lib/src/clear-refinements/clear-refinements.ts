@@ -9,20 +9,23 @@ import { TypedBaseWidget } from '../typed-base-widget';
 import { NgAisInstantSearch } from '../instantsearch/instantsearch';
 import { NgAisIndex } from '../index-widget/index-widget';
 import { noop } from '../utils';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'ais-clear-refinements',
+  standalone: true,
+  imports: [CommonModule],
   template: `
-    <div
-      [class]="cx()"
-      *ngIf="!isHidden"
-    >
+    <div [class]="cx()" *ngIf="!isHidden">
       <button
-        [class]="cx('button') + (!state.hasRefinements ? (' ' + cx('button', 'disabled')) : '')"
+        [class]="
+          cx('button') +
+          (!state.hasRefinements ? ' ' + cx('button', 'disabled') : '')
+        "
         (click)="handleClick($event)"
         [disabled]="!state.hasRefinements"
       >
-        {{resetLabel}}
+        {{ resetLabel }}
       </button>
     </div>
   `,
@@ -42,7 +45,7 @@ export class NgAisClearRefinements extends TypedBaseWidget<
   @Input()
   public transformItems?: ClearRefinementsConnectorParams['transformItems'];
 
-  public state: ClearRefinementsRenderState = {
+  public override state: ClearRefinementsRenderState = {
     hasRefinements: false,
     canRefine: false,
     refine: noop,
@@ -50,7 +53,7 @@ export class NgAisClearRefinements extends TypedBaseWidget<
   };
 
   get isHidden(): boolean {
-    return !this.state.hasRefinements && this.autoHideContainer;
+    return Boolean(!this.state.hasRefinements && this.autoHideContainer);
   }
 
   constructor(
@@ -63,7 +66,7 @@ export class NgAisClearRefinements extends TypedBaseWidget<
     super('ClearRefinements');
   }
 
-  public ngOnInit() {
+  public override ngOnInit() {
     this.createWidget(
       connectClearRefinements,
       {

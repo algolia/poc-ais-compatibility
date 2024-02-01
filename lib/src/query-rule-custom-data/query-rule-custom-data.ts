@@ -18,16 +18,19 @@ import {
 import { TypedBaseWidget } from '../typed-base-widget';
 import { NgAisInstantSearch } from '../instantsearch/instantsearch';
 import { NgAisIndex } from '../index-widget/index-widget';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'ais-query-rule-custom-data',
+  standalone: true,
+  imports: [CommonModule],
   template: `
-    <div [class]='cx()'>
-      <ng-container *ngTemplateOutlet='template; context: templateContext'>
+    <div [class]="cx()">
+      <ng-container *ngTemplateOutlet="template; context: templateContext">
       </ng-container>
 
-      <div *ngIf='!template'>
-        <div *ngFor='let item of state.items'>
+      <div *ngIf="!template">
+        <div *ngFor="let item of state.items">
           <pre>{{ item | json }}</pre>
         </div>
       </div>
@@ -43,7 +46,7 @@ export class NgAisQueryRuleCustomData extends TypedBaseWidget<
 
   @Input() public transformItems?: QueryRulesConnectorParams['transformItems'];
 
-  public state: QueryRulesRenderState = {
+  public override state: QueryRulesRenderState = {
     items: [],
   };
 
@@ -63,7 +66,7 @@ export class NgAisQueryRuleCustomData extends TypedBaseWidget<
     super('QueryRuleCustomData');
   }
 
-  public ngOnInit() {
+  public override ngOnInit() {
     this.createWidget(
       connectQueryRules,
       {

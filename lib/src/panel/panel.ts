@@ -1,11 +1,14 @@
+import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'ais-panel',
+  standalone: true,
+  imports: [CommonModule],
   template: `
     <div class="ais-Panel">
       <div *ngIf="header" class="ais-Panel-header">
-        {{header}}
+        {{ header }}
       </div>
 
       <div class="ais-Panel-body">
@@ -13,7 +16,7 @@ import { Component, Input } from '@angular/core';
       </div>
 
       <div *ngIf="footer" class="ais-Panel-footer">
-        {{footer}}
+        {{ footer }}
       </div>
     </div>
   `,

@@ -4,26 +4,26 @@ import {
   HierarchicalMenuRenderState,
   HierarchicalMenuItem,
 } from 'instantsearch.js/es/connectors/hierarchical-menu/connectHierarchicalMenu';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'ais-hierarchical-menu-item',
+  standalone: true,
+  imports: [CommonModule],
   template: `
-    <li
-      [class]="getItemClass(item)"
-      (click)="handleClick($event, item)"
-    >
+    <li [class]="getItemClass(item)" (click)="handleClick($event, item)">
       <a
         [class]="cx('link')"
-        href="{{createURL(item.value)}}"
+        href="{{ createURL(item.value) }}"
         (click)="handleClick($event, item)"
       >
-        <span [class]="cx('label')">{{item.label}}</span>
-        <span [class]="cx('count')">{{item.count}}</span>
+        <span [class]="cx('label')">{{ item.label }}</span>
+        <span [class]="cx('count')">{{ item.count }}</span>
       </a>
 
       <ul
         [class]="getListClass()"
-        *ngIf="item.isRefined && isArray(item.data) && item.data.length > 0"
+        *ngIf="item.isRefined && isArray(item.data) && item.data!.length > 0"
       >
         <ais-hierarchical-menu-item
           *ngFor="let child of item.data"
@@ -39,20 +39,20 @@ import {
 })
 export class NgAisHierarchicalMenuItem {
   @Input() public lvl: number = 1;
-  @Input() public refine: HierarchicalMenuRenderState['refine'];
-  @Input() public createURL: HierarchicalMenuRenderState['createURL'];
-  @Input() public item: HierarchicalMenuItem;
+  @Input() public refine!: HierarchicalMenuRenderState['refine'];
+  @Input() public createURL!: HierarchicalMenuRenderState['createURL'];
+  @Input() public item!: HierarchicalMenuItem;
 
   public cx = bem('HierarchicalMenu');
 
-  public getItemClass(item): string {
+  public getItemClass(item: HierarchicalMenuItem): string {
     let className = this.cx('item');
 
     if (item.isRefined) {
       className = `${className} ${this.cx('item', 'selected')}`;
     }
 
-    if (this.isArray(item.data) && item.data.length > 0) {
+    if (this.isArray(item.data) && item.data!.length > 0) {
       className = `${className} ${this.cx('item', 'parent')}`;
     }
 

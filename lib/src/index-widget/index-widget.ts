@@ -18,13 +18,14 @@ import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'ais-index',
+  standalone: true,
   template: `<ng-content></ng-content>`,
 })
 export class NgAisIndex implements OnInit, OnDestroy {
-  @Input() public indexName: IndexWidgetParams['indexName'];
+  @Input() public indexName!: IndexWidgetParams['indexName'];
   @Input() public indexId?: IndexWidgetParams['indexId'];
 
-  public widget?: IndexWidget;
+  public widget!: IndexWidget;
 
   constructor(
     // public API does not include SkipSelf, but the index widget should accept parents, avoiding itself.
@@ -36,7 +37,7 @@ export class NgAisIndex implements OnInit, OnDestroy {
     public instantSearchInstance: NgAisInstantSearch
   ) {}
 
-  get parent() {
+  get parent(): any {
     if (this.parentIndex) {
       return this.parentIndex;
     }
