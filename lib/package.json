@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "instantsearch.js": "^4.64.2",
+    "querystring-es3": "^0.2.1",
     "tslib": "^2.3.0"
   },
   "sideEffects": false,

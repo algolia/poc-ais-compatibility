@@ -1,3 +1,4 @@
+// Widgets
 export * from './breadcrumb/breadcrumb';
 export * from './clear-refinements/clear-refinements';
 export * from './configure/configure';
@@ -24,3 +25,6 @@ export * from './snippet/snippet';
 export * from './sort-by/sort-by';
 export * from './stats/stats';
 export * from './toggle/toggle';
+
+// Server-side rendering
+export * from './create-ssr-search-client';
